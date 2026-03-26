@@ -1961,15 +1961,23 @@ function JioGamesApp() {
         </div>
       </div>
 
-      {(tab === "mobile" || tab === "allscreen" || tab === "store") && !selectedGame && (
-        <AppHeader onProfile={() => handleNav("profile")} onSubscribe={() => handleNav("subscribe")} onSearch={() => setShowSearch(true)} />
-      )}
-
       {showSearch && (
         <SearchOverlay onClose={() => setShowSearch(false)} onSelect={handleGameSelect} context={tab} />
       )}
 
       <div ref={scrollRef} style={{ position: "absolute", top: 0, left: 0, right: 0, bottom: 0, overflowY: "auto", overflowX: "hidden", paddingBottom: 68 }}>
+        {(tab === "mobile" || tab === "allscreen" || tab === "store") && !selectedGame && (
+          <div style={{ position: "relative", zIndex: 50, padding: "42px 16px 0", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+            <JioLogo />
+            <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
+              <button onClick={() => setShowSearch(true)} style={{ width: 36, height: 36, borderRadius: 12, background: C.glass, backdropFilter: "blur(12px)", display: "flex", alignItems: "center", justifyContent: "center", border: `1px solid ${C.glassBorder}`, cursor: "pointer", color: C.textSec }}>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+              </button>
+              <button onClick={() => handleNav("subscribe")} style={{ padding: "8px 14px", borderRadius: 8, background: `linear-gradient(135deg, ${C.gold}15, ${C.gold}08)`, border: `1px solid ${C.gold}20`, fontFamily: FONT.display, fontSize: 11, fontWeight: 700, color: C.gold, letterSpacing: 0.8, cursor: "pointer", textTransform: "uppercase" }}>Subscribe</button>
+              <button onClick={() => handleNav("profile")} style={{ width: 36, height: 36, borderRadius: 12, background: "linear-gradient(135deg, #8b5cf6, #6366f1)", display: "flex", alignItems: "center", justifyContent: "center", border: "1px solid rgba(139,92,246,0.3)", cursor: "pointer", color: "#fff", fontFamily: FONT.display, fontSize: 13, fontWeight: 800, letterSpacing: 1 }}>N</button>
+            </div>
+          </div>
+        )}
         {selectedGame ? (
           <GameDetailPage game={selectedGame} onClose={() => setSelectedGame(null)} passType={selectedGame.passType || tab} onSubscribe={handleSubscribeFromGame} onGameSelect={handleGameSelect} />
         ) : (
