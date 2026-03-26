@@ -1806,17 +1806,13 @@ function ProfileTab({ onClose }) {
         <ProfileMenuItem icon="🎁" label="My Rewards" color={C.gold} />
       </CollapsibleSection>
 
-      {/* Help & Support */}
-      <CollapsibleSection title="Help & Support">
-        <ProfileMenuItem icon="ℹ" label="Contact Us" color={C.textDim} />
-        <ProfileMenuItem icon="🔒" label="Privacy Policy" color={C.accent} />
-        <ProfileMenuItem icon="📄" label="Terms & Conditions" color={C.accent} />
-      </CollapsibleSection>
-
       {/* App Settings */}
       <CollapsibleSection title="App Settings">
         <ProfileMenuItem icon="⚙" label="Settings" color={C.textDim} />
         <ProfileMenuItem icon="🔔" label="Notifications" color={C.textDim} />
+        <ProfileMenuItem icon="ℹ" label="Contact Us" color={C.textDim} />
+        <ProfileMenuItem icon="🔒" label="Privacy Policy" color={C.accent} />
+        <ProfileMenuItem icon="📄" label="Terms & Conditions" color={C.accent} />
       </CollapsibleSection>
 
       {/* Logout */}
