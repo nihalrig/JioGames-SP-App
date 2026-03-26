@@ -1746,63 +1746,96 @@ function SubscribeScreen({ onClose, initialPlan }) {
 }
 
 // ─── Profile Tab ───
+function ProfileMenuItem({ icon, label, color }) {
+  return (
+    <div style={{ display: "flex", alignItems: "center", gap: 14, padding: "14px 0", borderBottom: `1px solid ${C.border}`, cursor: "pointer" }}>
+      <div style={{ width: 34, height: 34, borderRadius: 10, background: `${color || C.accent}12`, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+        <span style={{ fontSize: 15, color: color || C.accent }}>{icon}</span>
+      </div>
+      <span style={{ flex: 1, fontFamily: FONT.body, fontSize: 14, color: C.textSec, fontWeight: 500 }}>{label}</span>
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke={C.textDim} strokeWidth="2"><polyline points="9 18 15 12 9 6"/></svg>
+    </div>
+  );
+}
+
 function ProfileTab({ onClose }) {
   const [animIn, setAnimIn] = useState(false);
   useEffect(() => { setTimeout(() => setAnimIn(true), 60); }, []);
 
   return (
     <div style={{ opacity: animIn ? 1 : 0, transition: "opacity 0.4s ease", paddingTop: 80 }}>
-      <button onClick={onClose} style={{ position: "absolute", top: 46, right: 16, zIndex: 60, width: 36, height: 36, borderRadius: 12, background: C.surface, border: `1px solid ${C.border}`, color: C.textSec, cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center" }}>
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      <button onClick={onClose} style={{ position: "absolute", top: 46, left: 16, zIndex: 60, width: 36, height: 36, borderRadius: 12, background: C.surface, border: `1px solid ${C.border}`, color: C.textSec, cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center" }}>
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="15 18 9 12 15 6"/></svg>
       </button>
-      <div style={{ padding: "0 20px 28px" }}>
-        <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
-          <div style={{ width: 64, height: 64, borderRadius: 18, background: "linear-gradient(135deg, #8b5cf6, #6366f1)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 24, fontFamily: FONT.display, fontWeight: 800, color: "#fff", boxShadow: "0 4px 24px rgba(139,92,246,0.25)", letterSpacing: 1 }}>NW</div>
-          <div>
-            <div style={{ fontFamily: FONT.display, fontSize: 20, fontWeight: 800, color: C.text, letterSpacing: 1.5, textTransform: "uppercase" }}>NightWolf_X</div>
-            <div style={{ fontFamily: FONT.body, fontSize: 12, color: C.textSec, marginTop: 3, display: "flex", alignItems: "center", gap: 6 }}>
-              <span style={{ width: 6, height: 6, borderRadius: "50%", background: C.accent, boxShadow: `0 0 8px ${C.accentGlow}`, display: "inline-block" }} />Online
-            </div>
-          </div>
+
+      {/* Profile header */}
+      <div style={{ padding: "0 20px 24px", display: "flex", alignItems: "center", gap: 16 }}>
+        <div style={{ width: 56, height: 56, borderRadius: 28, background: "linear-gradient(135deg, #8b5cf6, #6366f1)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 20, fontFamily: FONT.display, fontWeight: 800, color: "#fff", boxShadow: "0 4px 24px rgba(139,92,246,0.25)" }}>NS</div>
+        <div>
+          <div style={{ fontFamily: FONT.display, fontSize: 18, fontWeight: 800, color: C.text, letterSpacing: 0.5 }}>Nihal Singh</div>
+          <div style={{ fontFamily: FONT.body, fontSize: 11, color: C.textDim, marginTop: 2 }}>nihal@jiogames.com</div>
         </div>
       </div>
-      <CollapsibleSection title="My Plans" defaultOpen={true}>
-        {[{ name: "Mobile Pro", status: "Active", color: C.gold, expires: "Apr 28, 2026" }, { name: "Cloud Pro Pass", status: "Trial", color: C.purple, expires: "Apr 05, 2026" }].map((sub, i) => (
-          <div key={i} style={{ display: "flex", alignItems: "center", gap: 14, padding: "16px", borderRadius: 16, marginBottom: 8, background: C.card, border: `1px solid ${sub.color}12` }}>
-            <div style={{ width: 42, height: 42, borderRadius: 12, background: `linear-gradient(135deg, ${sub.color}20, ${sub.color}08)`, display: "flex", alignItems: "center", justifyContent: "center" }}>
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke={sub.color} strokeWidth="2">{sub.name.includes("Mobile") ? <><rect x="5" y="2" width="14" height="20" rx="3"/><line x1="12" y1="18" x2="12" y2="18.01" strokeWidth="2.5" strokeLinecap="round"/></> : <><path d="M17.5 19H9a7 7 0 110-14h9.5C20 5 21 6 21 7.5S20 10 18.5 10H9a3.5 3.5 0 110-7"/></>}</svg>
-            </div>
-            <div style={{ flex: 1 }}>
-              <div style={{ fontFamily: FONT.body, fontSize: 14, fontWeight: 600, color: C.text }}>{sub.name}</div>
-              <div style={{ fontFamily: FONT.body, fontSize: 11, color: C.textDim, marginTop: 2 }}>Expires {sub.expires}</div>
-            </div>
-            <span style={{ padding: "4px 10px", borderRadius: 6, background: `${sub.color}12`, color: sub.color, fontFamily: FONT.display, fontSize: 10, fontWeight: 700, letterSpacing: 1, textTransform: "uppercase" }}>{sub.status}</span>
-          </div>
-        ))}
+
+      {/* My Plans */}
+      <CollapsibleSection title="My Plans">
+        <ProfileMenuItem icon="📋" label="Subscription" color={C.accent} />
+        <ProfileMenuItem icon="🎁" label="Redeem Code" color={C.gold} />
+        <ProfileMenuItem icon="👑" label="Earn Crowns" color={C.gold} />
+        <ProfileMenuItem icon="🏪" label="Redeem Store" color="#ff6d00" />
       </CollapsibleSection>
-      <CollapsibleSection title="eSports">
-        {[{ title: "Valorant Championship", status: "Live Now", color: C.red }, { title: "FC Mobile Cup", status: "Starts Apr 2", color: C.accent }, { title: "BGMI Pro League", status: "Registrations Open", color: C.cyan }].map((t, i) => (
-          <div key={i} style={{ display: "flex", alignItems: "center", gap: 12, padding: "14px", borderRadius: 14, marginBottom: 8, background: C.card, border: `1px solid ${C.border}`, cursor: "pointer" }}>
-            <div style={{ width: 36, height: 36, borderRadius: 10, background: `${t.color}10`, display: "flex", alignItems: "center", justifyContent: "center" }}>
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={t.color} strokeWidth="2"><path d="M6 9H4.5a2.5 2.5 0 010-5C7 4 6 9 6 9zm12 0h1.5a2.5 2.5 0 000-5C17 4 18 9 18 9z"/><path d="M4 22h16M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20 7 22m7-7.34V17c0 .55.47.98.97 1.21C16.15 18.75 17 20 17 22"/><path d="M18 2H6v7a6 6 0 1012 0V2z"/></svg>
-            </div>
-            <div style={{ flex: 1 }}><div style={{ fontFamily: FONT.body, fontSize: 13, fontWeight: 600, color: C.text }}>{t.title}</div></div>
-            <span style={{ padding: "3px 10px", borderRadius: 6, background: `${t.color}10`, color: t.color, fontFamily: FONT.display, fontSize: 10, fontWeight: 700, letterSpacing: 0.5, textTransform: "uppercase" }}>{t.status}</span>
-          </div>
-        ))}
+
+      {/* Esports */}
+      <CollapsibleSection title="Esports">
+        <ProfileMenuItem icon="🏆" label="My Tournaments" color={C.accent} />
+        <ProfileMenuItem icon="👥" label="My Teams" color={C.accent} />
+        <ProfileMenuItem icon="🎮" label="Fantasy League" color={C.cyan} />
+        <ProfileMenuItem icon="⚔" label="Join Tournament" color={C.accent} />
       </CollapsibleSection>
-      <CollapsibleSection title="Settings">
-        {["Account", "Notifications", "Privacy", "Help & Support"].map((item, i) => (
-          <div key={i} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "14px 0", borderBottom: `1px solid ${C.border}`, fontFamily: FONT.body, fontSize: 14, color: C.textSec, cursor: "pointer" }}>
-            {item}
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke={C.textDim} strokeWidth="2"><polyline points="9 18 15 12 9 6"/></svg>
-          </div>
-        ))}
+
+      {/* My Linked Stores */}
+      <CollapsibleSection title="My Linked Stores">
+        <ProfileMenuItem icon="🔗" label="Linked Stores" color={C.accent} />
+        <ProfileMenuItem icon="🛒" label="My Purchase" color={C.accent} />
+        <ProfileMenuItem icon="🎮" label="My Game Accounts" color={C.accent} />
       </CollapsibleSection>
-      <div style={{ padding: "12px 20px" }}>
-        <button style={{ width: "100%", padding: "14px 0", borderRadius: 14, background: "none", border: `1px solid ${C.red}20`, color: C.red, fontFamily: FONT.display, fontSize: 13, fontWeight: 700, letterSpacing: 1.5, textTransform: "uppercase", cursor: "pointer", opacity: 0.8 }}>Logout</button>
+
+      {/* My Address */}
+      <CollapsibleSection title="My Address">
+        <ProfileMenuItem icon="📍" label="Saved Addresses" color={C.accent} />
+      </CollapsibleSection>
+
+      {/* My Orders */}
+      <CollapsibleSection title="My Orders">
+        <ProfileMenuItem icon="📦" label="Order History" color={C.accent} />
+        <ProfileMenuItem icon="🎫" label="My QR Codes" color={C.accent} />
+        <ProfileMenuItem icon="🎁" label="My Rewards" color={C.gold} />
+      </CollapsibleSection>
+
+      {/* Help & Support */}
+      <CollapsibleSection title="Help & Support">
+        <ProfileMenuItem icon="❓" label="Help & Support" color={C.textDim} />
+        <ProfileMenuItem icon="ℹ" label="Contact Us" color={C.textDim} />
+        <ProfileMenuItem icon="🔒" label="Privacy Policy" color={C.accent} />
+        <ProfileMenuItem icon="📄" label="Terms & Conditions" color={C.accent} />
+      </CollapsibleSection>
+
+      {/* App Settings */}
+      <CollapsibleSection title="App Settings">
+        <ProfileMenuItem icon="⚙" label="Settings" color={C.textDim} />
+        <ProfileMenuItem icon="🔔" label="Notifications" color={C.textDim} />
+      </CollapsibleSection>
+
+      {/* Logout */}
+      <div style={{ padding: "16px 20px" }}>
+        <div onClick={() => {}} style={{ display: "flex", alignItems: "center", gap: 14, padding: "14px 0", cursor: "pointer" }}>
+          <div style={{ width: 34, height: 34, borderRadius: 10, background: `${C.red}12`, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={C.red} strokeWidth="2"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+          </div>
+          <span style={{ fontFamily: FONT.body, fontSize: 14, color: C.red, fontWeight: 500 }}>Logout</span>
+        </div>
       </div>
-      <div style={{ height: 120 }} />
+      <div style={{ height: 100 }} />
     </div>
   );
 }
