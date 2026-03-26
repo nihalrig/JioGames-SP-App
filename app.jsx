@@ -1200,40 +1200,42 @@ function GameDetailPage({ game, onClose, passType, onSubscribe, onGameSelect }) 
         </div>
       )}
 
-      {/* Media Gallery — vertical stack */}
-      <div style={{ padding: "24px 20px 0" }}>
-        {/* Trailer card */}
-        <div onClick={() => setTrailerPlaying(true)} style={{
-          width: "100%", borderRadius: 16, overflow: "hidden", position: "relative",
-          aspectRatio: "16/9", cursor: "pointer", marginBottom: 10,
-          background: `linear-gradient(135deg, ${c1}45 0%, ${c2}25 50%, ${C.bg} 100%)`,
-          border: `1px solid ${c1}20`,
-        }}>
-          <div style={{ position: "absolute", inset: 0, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 60, opacity: 0.15, color: c3, filter: `drop-shadow(0 0 40px ${c1})` }}>{art.icon}</div>
-          <div style={{ position: "absolute", inset: 0, display: "flex", alignItems: "center", justifyContent: "center" }}>
-            <div style={{ width: 48, height: 48, borderRadius: "50%", background: "rgba(255,255,255,0.12)", backdropFilter: "blur(12px)", display: "flex", alignItems: "center", justifyContent: "center", border: "1.5px solid rgba(255,255,255,0.2)" }}>
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="#fff"><polygon points="8,5 20,12 8,19"/></svg>
-            </div>
-          </div>
-        </div>
-        {/* Image cards */}
-        {[1, 2, 3].map(i => {
-          const angle = i * 50 + 20;
-          const mix1 = i === 1 ? c1 : i === 2 ? c2 : c3;
-          const mix2 = i === 1 ? c2 : i === 2 ? c3 : c1;
-          return (
-            <div key={i} style={{
-              width: "100%", borderRadius: 16, overflow: "hidden", position: "relative",
-              aspectRatio: "16/9", marginBottom: 10, cursor: "pointer",
-              background: `linear-gradient(${angle}deg, ${mix1}35 0%, ${mix2}18 40%, ${C.bg} 100%)`,
-              border: `1px solid ${mix1}15`,
-            }}>
-              <div style={{ position: "absolute", inset: 0, display: "flex", alignItems: "center", justifyContent: "center" }}>
-                <span style={{ fontSize: 44, opacity: 0.15, color: mix1, filter: `drop-shadow(0 0 30px ${mix1})` }}>{art.icon}</span>
+      {/* Media Gallery — horizontal scroll */}
+      <div style={{ padding: "20px 0 0" }}>
+        <div style={{ display: "flex", gap: 10, padding: "0 20px", overflowX: "auto", scrollbarWidth: "none" }}>
+          {/* Trailer thumbnail */}
+          <div onClick={() => setTrailerPlaying(true)} style={{
+            flexShrink: 0, width: 150, height: 95, borderRadius: 14, overflow: "hidden",
+            position: "relative", cursor: "pointer",
+            background: `linear-gradient(135deg, ${c1}40 0%, ${c2}20 100%)`,
+            border: `2px solid ${C.accent}40`,
+          }}>
+            <div style={{ position: "absolute", inset: 0, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 32, opacity: 0.2, color: c3 }}>{art.icon}</div>
+            <div style={{ position: "absolute", inset: 0, display: "flex", alignItems: "center", justifyContent: "center" }}>
+              <div style={{ width: 34, height: 34, borderRadius: "50%", background: "rgba(255,255,255,0.15)", backdropFilter: "blur(8px)", display: "flex", alignItems: "center", justifyContent: "center", border: "1px solid rgba(255,255,255,0.2)" }}>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="#fff"><polygon points="8,5 20,12 8,19"/></svg>
               </div>
             </div>
-          );
-        })}
+          </div>
+          {/* Image thumbnails */}
+          {[1, 2, 3].map(i => {
+            const angle = i * 45;
+            const mix1 = i === 1 ? c1 : i === 2 ? c2 : c3;
+            const mix2 = i === 1 ? c2 : i === 2 ? c3 : c1;
+            return (
+              <div key={i} style={{
+                flexShrink: 0, width: 150, height: 95, borderRadius: 14, overflow: "hidden",
+                position: "relative", cursor: "pointer",
+                background: `linear-gradient(${angle}deg, ${mix1}35 0%, ${mix2}15 50%, ${C.bg} 100%)`,
+                border: `1px solid ${mix1}12`,
+              }}>
+                <div style={{ position: "absolute", inset: 0, display: "flex", alignItems: "center", justifyContent: "center" }}>
+                  <span style={{ fontSize: 32, opacity: 0.15, color: mix1, filter: `drop-shadow(0 0 20px ${mix1})` }}>{art.icon}</span>
+                </div>
+              </div>
+            );
+          })}
+        </div>
       </div>
 
       {/* CTA */}
