@@ -1006,14 +1006,36 @@ const INSTANT_GAME_TITLES = new Set([
   "Fruit Ninja", "Temple Run", "Subway Surfers", "Crossy Road", "Wordle",
 ]);
 
+// ─── Game Overviews ───
+const GAME_OVERVIEWS = {
+  "GTA San Andreas": "Five years ago, Carl Johnson escaped the pressures of life in Los Santos. Now he must go on a journey that takes him across the state, to save his family and take control of the streets.",
+  "FC Mobile": "Build your Ultimate Team and take on the world. Experience authentic football with real players, leagues, and tournaments in the palm of your hand.",
+  "Stardew Valley": "You've inherited your grandfather's old farm plot in Stardew Valley. Armed with hand-me-down tools, you set out to begin your new life. Can you learn to live off the land?",
+  "Dead Cells": "A roguelike-metroidvania action-platformer. Explore an ever-changing castle, fight increasingly difficult enemies, and uncover the secrets within.",
+  "Minecraft": "Create, explore, survive, and repeat. The world is yours — mine resources, craft tools, and build anything you can imagine in an infinite procedurally generated world.",
+  "Monument Valley": "Guide the silent princess Ida through mysterious monuments, discovering impossible paths and optical illusions as you unravel the secrets of the Sacred Geometry.",
+  "Hitman": "Enter the world of assassination. Agent 47 travels the globe, tracking elite targets across exotic locations in this critically acclaimed stealth experience.",
+  "Hitman Absolution": "Agent 47 undertakes his most personal contract to date. Betrayed by the Agency and hunted by the police, he finds himself pursuing redemption in a corrupt world.",
+  "Hades": "Defy the god of the dead as you hack and slash out of the Underworld. Hades combines fast-paced action with rich story and character progression.",
+  "Celeste": "Help Madeline survive her inner demons on her journey to the top of Celeste Mountain. A tight, hand-crafted platforming experience about overcoming struggles.",
+  "Hollow Knight": "Descend into the forgotten kingdom of Hallownest. A beautifully hand-drawn 2D adventure through vast, ruined caverns teeming with strange creatures.",
+  "Cyberpunk 2077": "An open-world action-adventure set in Night City. A sprawling megalopolis obsessed with power, glamour, and body modification. You play as V, a mercenary outlaw.",
+  "God of War": "Kratos is a father again. Journeying with his son Atreus through the Norse wilds, they must fight to fulfill a deeply personal quest.",
+  "Elden Ring": "Rise, Tarnished. The Golden Order has been broken. Explore the Lands Between, a vast realm ruled by demigods, in this open-world action RPG.",
+};
+
+const DEFAULT_OVERVIEW = "Dive into an immersive gaming experience with stunning visuals, engaging gameplay, and hours of content. Available exclusively on JioGames — start your adventure today.";
+
 // ─── GAME DETAIL PAGE ───
 function GameDetailPage({ game, onClose, passType, onSubscribe, onGameSelect }) {
   const [animIn, setAnimIn] = useState(false);
   const [trailerPlaying, setTrailerPlaying] = useState(false);
   const [wishlisted, setWishlisted] = useState(false);
+  const [activeMedia, setActiveMedia] = useState(0);
   useEffect(() => { setTimeout(() => setAnimIn(true), 30); }, []);
   const art = getGameArt(game.title);
   const [c1, c2, c3] = art.colors;
+  const overview = GAME_OVERVIEWS[game.title] || DEFAULT_OVERVIEW;
   const isMobile = passType !== "allscreen";
   const isInstant = game.isInstant || INSTANT_GAME_TITLES.has(game.title);
   const mobileRating = isMobile ? (MOBILE_RATINGS[game.title] || { stars: 4.2, downloads: "1M+", ratings: "50K" }) : null;
@@ -1124,8 +1146,52 @@ function GameDetailPage({ game, onClose, passType, onSubscribe, onGameSelect }) 
         )}
       </div>
 
+      {/* Media Gallery */}
+      <div style={{ padding: "12px 0 0" }}>
+        <div style={{ display: "flex", gap: 10, padding: "0 20px", overflowX: "auto", scrollbarWidth: "none" }}>
+          {/* Trailer thumbnail */}
+          <div onClick={() => { setActiveMedia(0); setTrailerPlaying(true); }} style={{
+            flexShrink: 0, width: 140, height: 90, borderRadius: 12, overflow: "hidden",
+            position: "relative", cursor: "pointer",
+            border: activeMedia === 0 ? `2px solid ${C.accent}` : `2px solid transparent`,
+            background: `linear-gradient(135deg, ${c1}40 0%, ${c2}20 100%)`,
+          }}>
+            <div style={{ position: "absolute", inset: 0, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 28, opacity: 0.3, color: c3 }}>{art.icon}</div>
+            <div style={{ position: "absolute", inset: 0, display: "flex", alignItems: "center", justifyContent: "center" }}>
+              <div style={{ width: 32, height: 32, borderRadius: "50%", background: "rgba(255,255,255,0.15)", backdropFilter: "blur(8px)", display: "flex", alignItems: "center", justifyContent: "center", border: "1px solid rgba(255,255,255,0.2)" }}>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="#fff"><polygon points="8,5 20,12 8,19"/></svg>
+              </div>
+            </div>
+            <div style={{ position: "absolute", bottom: 0, left: 0, right: 0, padding: "12px 8px 5px", background: "linear-gradient(transparent, rgba(0,0,0,0.8))" }}>
+              <span style={{ fontFamily: FONT.body, fontSize: 8, color: "rgba(255,255,255,0.6)", fontWeight: 600, letterSpacing: 0.5, textTransform: "uppercase" }}>Trailer</span>
+            </div>
+          </div>
+          {/* Screenshot thumbnails */}
+          {[1, 2, 3].map(i => {
+            const angle = i * 45;
+            const mix1 = i === 1 ? c1 : i === 2 ? c2 : c3;
+            const mix2 = i === 1 ? c2 : i === 2 ? c3 : c1;
+            return (
+              <div key={i} onClick={() => setActiveMedia(i)} style={{
+                flexShrink: 0, width: 140, height: 90, borderRadius: 12, overflow: "hidden",
+                position: "relative", cursor: "pointer",
+                border: activeMedia === i ? `2px solid ${C.accent}` : `2px solid transparent`,
+                background: `linear-gradient(${angle}deg, ${mix1}35 0%, ${mix2}15 50%, ${C.bg} 100%)`,
+              }}>
+                <div style={{ position: "absolute", inset: 0, display: "flex", alignItems: "center", justifyContent: "center" }}>
+                  <span style={{ fontSize: 32, opacity: 0.2, color: mix1, filter: `drop-shadow(0 0 20px ${mix1})` }}>{art.icon}</span>
+                </div>
+                <div style={{ position: "absolute", bottom: 0, left: 0, right: 0, padding: "12px 8px 5px", background: "linear-gradient(transparent, rgba(0,0,0,0.7))" }}>
+                  <span style={{ fontFamily: FONT.body, fontSize: 8, color: "rgba(255,255,255,0.5)", fontWeight: 500, letterSpacing: 0.5, textTransform: "uppercase" }}>Screenshot {i}</span>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+
       {/* Game info */}
-      <div style={{ padding: "0 20px", marginTop: -20, position: "relative", zIndex: 5 }}>
+      <div style={{ padding: "0 20px", marginTop: 8, position: "relative", zIndex: 5 }}>
         <div style={{ fontFamily: FONT.display, fontSize: 28, fontWeight: 800, color: C.text, letterSpacing: -0.5 }}>{game.title}</div>
         {game.sentiment ? (
           <div style={{ display: "flex", alignItems: "center", gap: 8, marginTop: 10, flexWrap: "wrap", fontFamily: FONT.body, fontSize: 12, color: C.textSec }}>
@@ -1169,6 +1235,14 @@ function GameDetailPage({ game, onClose, passType, onSubscribe, onGameSelect }) 
           </div>
         )}
       </div>
+
+      {/* Overview — hide for instant games */}
+      {!isInstant && (
+        <div style={{ padding: "20px 20px 0" }}>
+          <div style={{ fontFamily: FONT.display, fontSize: 16, fontWeight: 800, color: C.text, letterSpacing: -0.3, marginBottom: 8 }}>Overview</div>
+          <p style={{ fontFamily: FONT.body, fontSize: 13, color: C.textSec, lineHeight: 1.7, margin: 0 }}>{overview}</p>
+        </div>
+      )}
 
       {/* CTA */}
       <div style={{ padding: "20px 20px 0" }}>
