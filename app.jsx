@@ -1780,24 +1780,18 @@ function ProfileTab({ onClose }) {
       {/* My Plans */}
       <CollapsibleSection title="My Plans">
         <ProfileMenuItem icon="📋" label="Subscription" color={C.accent} />
-        <ProfileMenuItem icon="🎁" label="Redeem Code" color={C.gold} />
-        <ProfileMenuItem icon="👑" label="Earn Crowns" color={C.gold} />
-        <ProfileMenuItem icon="🏪" label="Redeem Store" color="#ff6d00" />
       </CollapsibleSection>
 
       {/* Esports */}
       <CollapsibleSection title="Esports">
         <ProfileMenuItem icon="🏆" label="My Tournaments" color={C.accent} />
         <ProfileMenuItem icon="👥" label="My Teams" color={C.accent} />
-        <ProfileMenuItem icon="🎮" label="Fantasy League" color={C.cyan} />
         <ProfileMenuItem icon="⚔" label="Join Tournament" color={C.accent} />
       </CollapsibleSection>
 
       {/* My Linked Stores */}
       <CollapsibleSection title="My Linked Stores">
         <ProfileMenuItem icon="🔗" label="Linked Stores" color={C.accent} />
-        <ProfileMenuItem icon="🛒" label="My Purchase" color={C.accent} />
-        <ProfileMenuItem icon="🎮" label="My Game Accounts" color={C.accent} />
       </CollapsibleSection>
 
       {/* My Address */}
@@ -1805,8 +1799,8 @@ function ProfileTab({ onClose }) {
         <ProfileMenuItem icon="📍" label="Saved Addresses" color={C.accent} />
       </CollapsibleSection>
 
-      {/* My Orders */}
-      <CollapsibleSection title="My Orders">
+      {/* My Orders & Rewards */}
+      <CollapsibleSection title="My Orders & Rewards">
         <ProfileMenuItem icon="📦" label="Order History" color={C.accent} />
         <ProfileMenuItem icon="🎫" label="My QR Codes" color={C.accent} />
         <ProfileMenuItem icon="🎁" label="My Rewards" color={C.gold} />
@@ -1814,7 +1808,6 @@ function ProfileTab({ onClose }) {
 
       {/* Help & Support */}
       <CollapsibleSection title="Help & Support">
-        <ProfileMenuItem icon="❓" label="Help & Support" color={C.textDim} />
         <ProfileMenuItem icon="ℹ" label="Contact Us" color={C.textDim} />
         <ProfileMenuItem icon="🔒" label="Privacy Policy" color={C.accent} />
         <ProfileMenuItem icon="📄" label="Terms & Conditions" color={C.accent} />
