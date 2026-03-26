@@ -1181,8 +1181,8 @@ function GameDetailPage({ game, onClose, passType, onSubscribe, onGameSelect }) 
           <button onClick={() => onSubscribe && onSubscribe(passType === "allscreen" ? 1 : 0)} style={{
             width: "100%", padding: "13px 0", borderRadius: 26, border: "none",
             background: `linear-gradient(135deg, ${C.accent}, ${C.accentMuted})`,
-            color: "#000", fontFamily: FONT.display, fontWeight: 500, fontSize: 12,
-            letterSpacing: 0.6, cursor: "pointer", textTransform: "uppercase",
+            color: "#000", fontFamily: FONT.display, fontWeight: 700, fontSize: 14,
+            letterSpacing: 1, cursor: "pointer", textTransform: "uppercase",
             boxShadow: `0 4px 24px ${C.accentGlow}`,
           }}>{passType === "allscreen" ? "Subscribe to All Screen Pass" : "Subscribe to Mobile Pass"}</button>
         )}
@@ -1432,63 +1432,108 @@ function StoreTab() {
       {subTab === "home" && (
         <div style={{ animation: "fadeUp 0.25s ease" }}>
           {/* Promo banner */}
-          <div style={{ margin: "16px 20px 0", borderRadius: 16, overflow: "hidden", position: "relative", height: 140, background: "linear-gradient(135deg, #1b2838 0%, #2a475e 50%, #1b2838 100%)", border: `1px solid ${C.border}` }}>
+          <div style={{ margin: "16px 20px 0", borderRadius: 16, overflow: "hidden", position: "relative", height: 130, background: "linear-gradient(135deg, #1b2838 0%, #2a475e 50%, #1b2838 100%)", border: `1px solid ${C.border}` }}>
             <div style={{ position: "absolute", inset: 0, display: "flex", flexDirection: "column", justifyContent: "center", padding: "0 24px" }}>
-              <div style={{ fontFamily: FONT.display, fontSize: 11, fontWeight: 600, color: C.accent, letterSpacing: 1.5, textTransform: "uppercase", marginBottom: 6 }}>Steam Spring Sale</div>
+              <div style={{ fontFamily: FONT.display, fontSize: 10, fontWeight: 600, color: C.accent, letterSpacing: 1.5, textTransform: "uppercase", marginBottom: 6 }}>Steam Spring Sale</div>
               <div style={{ fontFamily: FONT.display, fontSize: 20, fontWeight: 800, color: "#fff", lineHeight: 1.2 }}>Up to 78% Off</div>
               <div style={{ fontFamily: FONT.body, fontSize: 11, color: "rgba(255,255,255,0.5)", marginTop: 6 }}>Refresh your game collection</div>
             </div>
             <div style={{ position: "absolute", right: 12, top: "50%", transform: "translateY(-50%)", fontSize: 60, opacity: 0.1, color: "#fff" }}>◎</div>
           </div>
 
-          {/* Coupons */}
-          <div style={{ display: "flex", gap: 10, padding: "16px 20px", overflowX: "auto", scrollbarWidth: "none" }}>
-            {storeCoupons.map(c => (
-              <div key={c.id} style={{ minWidth: 180, padding: "14px 16px", borderRadius: 14, position: "relative", overflow: "hidden", background: C.card, border: `1px solid ${c.color}15`, cursor: "pointer" }}>
-                <div style={{ position: "absolute", top: -20, right: -20, width: 70, height: 70, borderRadius: "50%", background: `radial-gradient(circle, ${c.color}12, transparent 70%)` }} />
-                <div style={{ fontFamily: FONT.display, fontSize: 18, fontWeight: 800, color: c.color, letterSpacing: -0.3 }}>{c.title}</div>
-                <div style={{ fontFamily: FONT.body, fontSize: 11, color: C.textSec, marginTop: 3 }}>{c.desc}</div>
-                <div style={{ fontFamily: FONT.mono, fontSize: 9, color: C.textDim, marginTop: 8, letterSpacing: 1.5, fontWeight: 500, padding: "3px 8px", borderRadius: 5, background: "rgba(255,255,255,0.03)", display: "inline-block", border: `1px solid ${C.border}` }}>{c.code}</div>
-              </div>
-            ))}
-          </div>
-
-          {/* Brands */}
-          <div style={{ marginTop: 4 }}><SectionTitle>Brands</SectionTitle></div>
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 12, padding: "0 20px" }}>
-            {storeBrands.map((b, i) => (
-              <div key={b.id} onClick={() => setSubTab("topups")} style={{
-                display: "flex", flexDirection: "column", alignItems: "center", gap: 8,
-                cursor: "pointer", animation: `fadeUp 0.25s ease ${i * 0.04}s both`,
-              }}>
+          {/* Recharge Hub */}
+          <div style={{ marginTop: 24 }}><SectionTitle action="See All">Recharge Hub</SectionTitle></div>
+          <div style={{ display: "flex", gap: 10, padding: "0 20px", overflowX: "auto", scrollbarWidth: "none" }}>
+            {[
+              { name: "App Store Code", icon: "", color: "#0091ea", amounts: ["₹100", "₹200", "₹500"] },
+              { name: "Google Play", icon: "▶", color: "#4caf50", amounts: ["₹100", "₹200", "₹500"] },
+              { name: "Steam Wallet", icon: "◎", color: "#1b2838", amounts: ["₹150", "₹250", "₹500"] },
+            ].map((item, i) => (
+              <div key={i} style={{ flexShrink: 0, width: 140, cursor: "pointer", animation: `fadeUp 0.25s ease ${i * 0.05}s both` }}>
                 <div style={{
-                  width: "100%", aspectRatio: "1", borderRadius: 16,
+                  width: 140, height: 100, borderRadius: 14,
                   background: C.card, border: `1px solid ${C.border}`,
                   display: "flex", alignItems: "center", justifyContent: "center",
-                  fontSize: 28, color: b.color,
-                  transition: "border-color 0.2s",
-                }}>{b.icon}</div>
-                <span style={{ fontFamily: FONT.body, fontSize: 9, color: C.textSec, textAlign: "center", lineHeight: 1.2, fontWeight: 500 }}>{b.name}</span>
+                  fontSize: 36, color: item.color,
+                }}>{item.icon}</div>
+                <div style={{ fontFamily: FONT.body, fontSize: 11, fontWeight: 600, color: C.text, marginTop: 8 }}>{item.name}</div>
+                <div style={{ fontFamily: FONT.body, fontSize: 11, color: C.accent, marginTop: 2, fontWeight: 600 }}>{item.amounts[0]}</div>
               </div>
             ))}
           </div>
 
-          {/* Quick deals */}
-          <div style={{ marginTop: 24 }}><SectionTitle>Quick Deals</SectionTitle></div>
-          <div style={{ padding: "0 20px" }}>
-            {storeItems.slice(0, 4).map((item, i) => (
-              <div key={item.id} style={{ display: "flex", alignItems: "center", gap: 14, padding: "12px 14px", borderRadius: 14, marginBottom: 8, background: C.card, border: `1px solid ${C.border}`, cursor: "pointer", animation: `fadeUp 0.25s ease ${i * 0.04}s both` }}>
-                <div style={{ width: 44, height: 44, borderRadius: 12, flexShrink: 0, overflow: "hidden", border: `1px solid ${item.color}15` }}>
-                  <CinematicArt title={item.title} size="sm" />
+          {/* Popular Top-Ups */}
+          <div style={{ marginTop: 24 }}><SectionTitle action="See All" onAction={() => setSubTab("topups")}>Popular Top-Ups</SectionTitle></div>
+          <div style={{ display: "flex", gap: 10, padding: "0 20px", overflowX: "auto", scrollbarWidth: "none" }}>
+            {[
+              { name: "156+16 Diamonds", game: "MOBA Legends", price: "₹293", icon: "⚔", color: "#6366f1", badge: "10% Bonus" },
+              { name: "BGMI - 60 UC", game: "BGMI", price: "₹75", icon: "🎯", color: "#ff9800" },
+              { name: "Valorant 475 VP", game: "Valorant", price: "₹399", icon: "◤", color: "#ff4655" },
+            ].map((item, i) => (
+              <div key={i} style={{ flexShrink: 0, width: 160, cursor: "pointer", animation: `fadeUp 0.25s ease ${i * 0.05}s both` }}>
+                <div style={{
+                  width: 160, height: 120, borderRadius: 14, position: "relative", overflow: "hidden",
+                  background: `linear-gradient(145deg, ${item.color}25 0%, ${item.color}08 100%)`,
+                  border: `1px solid ${item.color}20`,
+                  display: "flex", alignItems: "center", justifyContent: "center",
+                  fontSize: 40, color: item.color,
+                }}>
+                  {item.icon}
+                  {item.badge && (
+                    <div style={{ position: "absolute", top: 8, right: 8, padding: "2px 8px", borderRadius: 6, background: C.accent, fontFamily: FONT.body, fontSize: 8, fontWeight: 700, color: "#000", letterSpacing: 0.3 }}>{item.badge}</div>
+                  )}
                 </div>
-                <div style={{ flex: 1, minWidth: 0 }}>
-                  <span style={{ fontFamily: FONT.body, fontSize: 12, fontWeight: 600, color: C.text }}>{item.title}</span>
-                  <div style={{ fontFamily: FONT.body, fontSize: 10, color: C.textDim, marginTop: 1 }}>{item.desc}</div>
-                </div>
-                <button style={{ padding: "7px 14px", borderRadius: 8, background: "rgba(255,255,255,0.05)", border: `1px solid ${C.borderLight}`, fontFamily: FONT.display, fontSize: 12, fontWeight: 700, color: C.text, cursor: "pointer" }}>{item.price}</button>
+                <div style={{ fontFamily: FONT.body, fontSize: 11, fontWeight: 600, color: C.text, marginTop: 8, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{item.name}</div>
+                <div style={{ fontFamily: FONT.display, fontSize: 12, fontWeight: 700, color: C.text, marginTop: 2 }}>{item.price}</div>
               </div>
             ))}
           </div>
+
+          {/* Console Gaming Essentials */}
+          <div style={{ marginTop: 24 }}><SectionTitle>Console Gaming Essentials</SectionTitle></div>
+          <div style={{ display: "flex", gap: 10, padding: "0 20px", overflowX: "auto", scrollbarWidth: "none" }}>
+            {[
+              { name: "Rs 1000 PS Wallet Code", icon: "◈", color: "#0070d1", price: "₹1,000" },
+              { name: "6 Months Game Pass", icon: "✕", color: "#107c10", price: "₹2,249", badge: "Core" },
+              { name: "Rs 500 Nintendo eShop", icon: "◆", color: "#e4000f", price: "₹500" },
+            ].map((item, i) => (
+              <div key={i} style={{ flexShrink: 0, width: 160, cursor: "pointer", animation: `fadeUp 0.25s ease ${i * 0.05}s both` }}>
+                <div style={{
+                  width: 160, height: 120, borderRadius: 14, position: "relative", overflow: "hidden",
+                  background: C.card, border: `1px solid ${C.border}`,
+                  display: "flex", alignItems: "center", justifyContent: "center",
+                  fontSize: 40, color: item.color,
+                }}>
+                  {item.icon}
+                  {item.badge && (
+                    <div style={{ position: "absolute", top: 8, right: 8, padding: "2px 8px", borderRadius: 6, background: `${item.color}25`, border: `1px solid ${item.color}40`, fontFamily: FONT.body, fontSize: 8, fontWeight: 700, color: item.color, letterSpacing: 0.3 }}>{item.badge}</div>
+                  )}
+                </div>
+                <div style={{ fontFamily: FONT.body, fontSize: 11, fontWeight: 600, color: C.text, marginTop: 8, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{item.name}</div>
+                <div style={{ fontFamily: FONT.display, fontSize: 12, fontWeight: 700, color: C.text, marginTop: 2 }}>{item.price}</div>
+              </div>
+            ))}
+          </div>
+
+          {/* Platforms You Love */}
+          <div style={{ marginTop: 24 }}><SectionTitle>Platforms You Love</SectionTitle></div>
+          <div style={{ display: "flex", gap: 14, padding: "0 20px", overflowX: "auto", scrollbarWidth: "none" }}>
+            {storeBrands.map((b, i) => (
+              <div key={b.id} onClick={() => setSubTab("topups")} style={{
+                display: "flex", flexDirection: "column", alignItems: "center", gap: 6,
+                flexShrink: 0, cursor: "pointer", animation: `fadeUp 0.2s ease ${i * 0.03}s both`,
+              }}>
+                <div style={{
+                  width: 56, height: 56, borderRadius: 16,
+                  background: C.card, border: `1px solid ${C.border}`,
+                  display: "flex", alignItems: "center", justifyContent: "center",
+                  fontSize: 22, color: b.color,
+                }}>{b.icon}</div>
+                <span style={{ fontFamily: FONT.body, fontSize: 9, color: C.textDim, fontWeight: 500, whiteSpace: "nowrap" }}>{b.name}</span>
+              </div>
+            ))}
+          </div>
+
           <div style={{ height: 100 }} />
         </div>
       )}
