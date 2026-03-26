@@ -1146,52 +1146,8 @@ function GameDetailPage({ game, onClose, passType, onSubscribe, onGameSelect }) 
         )}
       </div>
 
-      {/* Media Gallery */}
-      <div style={{ padding: "12px 0 0" }}>
-        <div style={{ display: "flex", gap: 10, padding: "0 20px", overflowX: "auto", scrollbarWidth: "none" }}>
-          {/* Trailer thumbnail */}
-          <div onClick={() => { setActiveMedia(0); setTrailerPlaying(true); }} style={{
-            flexShrink: 0, width: 140, height: 90, borderRadius: 12, overflow: "hidden",
-            position: "relative", cursor: "pointer",
-            border: activeMedia === 0 ? `2px solid ${C.accent}` : `2px solid transparent`,
-            background: `linear-gradient(135deg, ${c1}40 0%, ${c2}20 100%)`,
-          }}>
-            <div style={{ position: "absolute", inset: 0, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 28, opacity: 0.3, color: c3 }}>{art.icon}</div>
-            <div style={{ position: "absolute", inset: 0, display: "flex", alignItems: "center", justifyContent: "center" }}>
-              <div style={{ width: 32, height: 32, borderRadius: "50%", background: "rgba(255,255,255,0.15)", backdropFilter: "blur(8px)", display: "flex", alignItems: "center", justifyContent: "center", border: "1px solid rgba(255,255,255,0.2)" }}>
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="#fff"><polygon points="8,5 20,12 8,19"/></svg>
-              </div>
-            </div>
-            <div style={{ position: "absolute", bottom: 0, left: 0, right: 0, padding: "12px 8px 5px", background: "linear-gradient(transparent, rgba(0,0,0,0.8))" }}>
-              <span style={{ fontFamily: FONT.body, fontSize: 8, color: "rgba(255,255,255,0.6)", fontWeight: 600, letterSpacing: 0.5, textTransform: "uppercase" }}>Trailer</span>
-            </div>
-          </div>
-          {/* Screenshot thumbnails */}
-          {[1, 2, 3].map(i => {
-            const angle = i * 45;
-            const mix1 = i === 1 ? c1 : i === 2 ? c2 : c3;
-            const mix2 = i === 1 ? c2 : i === 2 ? c3 : c1;
-            return (
-              <div key={i} onClick={() => setActiveMedia(i)} style={{
-                flexShrink: 0, width: 140, height: 90, borderRadius: 12, overflow: "hidden",
-                position: "relative", cursor: "pointer",
-                border: activeMedia === i ? `2px solid ${C.accent}` : `2px solid transparent`,
-                background: `linear-gradient(${angle}deg, ${mix1}35 0%, ${mix2}15 50%, ${C.bg} 100%)`,
-              }}>
-                <div style={{ position: "absolute", inset: 0, display: "flex", alignItems: "center", justifyContent: "center" }}>
-                  <span style={{ fontSize: 32, opacity: 0.2, color: mix1, filter: `drop-shadow(0 0 20px ${mix1})` }}>{art.icon}</span>
-                </div>
-                <div style={{ position: "absolute", bottom: 0, left: 0, right: 0, padding: "12px 8px 5px", background: "linear-gradient(transparent, rgba(0,0,0,0.7))" }}>
-                  <span style={{ fontFamily: FONT.body, fontSize: 8, color: "rgba(255,255,255,0.5)", fontWeight: 500, letterSpacing: 0.5, textTransform: "uppercase" }}>Screenshot {i}</span>
-                </div>
-              </div>
-            );
-          })}
-        </div>
-      </div>
-
       {/* Game info */}
-      <div style={{ padding: "0 20px", marginTop: 8, position: "relative", zIndex: 5 }}>
+      <div style={{ padding: "0 20px", marginTop: -20, position: "relative", zIndex: 5 }}>
         <div style={{ fontFamily: FONT.display, fontSize: 28, fontWeight: 800, color: C.text, letterSpacing: -0.5 }}>{game.title}</div>
         {game.sentiment ? (
           <div style={{ display: "flex", alignItems: "center", gap: 8, marginTop: 10, flexWrap: "wrap", fontFamily: FONT.body, fontSize: 12, color: C.textSec }}>
@@ -1243,6 +1199,42 @@ function GameDetailPage({ game, onClose, passType, onSubscribe, onGameSelect }) 
           <p style={{ fontFamily: FONT.body, fontSize: 13, color: C.textSec, lineHeight: 1.7, margin: 0 }}>{overview}</p>
         </div>
       )}
+
+      {/* Media Gallery — vertical stack */}
+      <div style={{ padding: "24px 20px 0" }}>
+        {/* Trailer card */}
+        <div onClick={() => setTrailerPlaying(true)} style={{
+          width: "100%", borderRadius: 16, overflow: "hidden", position: "relative",
+          aspectRatio: "16/9", cursor: "pointer", marginBottom: 10,
+          background: `linear-gradient(135deg, ${c1}45 0%, ${c2}25 50%, ${C.bg} 100%)`,
+          border: `1px solid ${c1}20`,
+        }}>
+          <div style={{ position: "absolute", inset: 0, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 60, opacity: 0.15, color: c3, filter: `drop-shadow(0 0 40px ${c1})` }}>{art.icon}</div>
+          <div style={{ position: "absolute", inset: 0, display: "flex", alignItems: "center", justifyContent: "center" }}>
+            <div style={{ width: 48, height: 48, borderRadius: "50%", background: "rgba(255,255,255,0.12)", backdropFilter: "blur(12px)", display: "flex", alignItems: "center", justifyContent: "center", border: "1.5px solid rgba(255,255,255,0.2)" }}>
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="#fff"><polygon points="8,5 20,12 8,19"/></svg>
+            </div>
+          </div>
+        </div>
+        {/* Image cards */}
+        {[1, 2, 3].map(i => {
+          const angle = i * 50 + 20;
+          const mix1 = i === 1 ? c1 : i === 2 ? c2 : c3;
+          const mix2 = i === 1 ? c2 : i === 2 ? c3 : c1;
+          return (
+            <div key={i} style={{
+              width: "100%", borderRadius: 16, overflow: "hidden", position: "relative",
+              aspectRatio: "16/9", marginBottom: 10, cursor: "pointer",
+              background: `linear-gradient(${angle}deg, ${mix1}35 0%, ${mix2}18 40%, ${C.bg} 100%)`,
+              border: `1px solid ${mix1}15`,
+            }}>
+              <div style={{ position: "absolute", inset: 0, display: "flex", alignItems: "center", justifyContent: "center" }}>
+                <span style={{ fontSize: 44, opacity: 0.15, color: mix1, filter: `drop-shadow(0 0 30px ${mix1})` }}>{art.icon}</span>
+              </div>
+            </div>
+          );
+        })}
+      </div>
 
       {/* CTA */}
       <div style={{ padding: "20px 20px 0" }}>
