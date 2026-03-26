@@ -146,6 +146,63 @@ const storeCoupons = [
   { id: 62, title: "Free Trial", desc: "7 days Cloud Pro Pass", code: "CLOUDTRIAL", color: C.cyan },
 ];
 
+// ─── Store: Brands ───
+const storeBrands = [
+  { id: "b1", name: "BGMI", icon: "🎯", color: "#ff9800", bg: "#1a1200" },
+  { id: "b2", name: "Roblox", icon: "◆", color: "#e53935", bg: "#1a0505" },
+  { id: "b3", name: "App Store", icon: "", color: "#0091ea", bg: "#0a1520" },
+  { id: "b4", name: "Steam", icon: "◎", color: "#1b2838", bg: "#0d1520" },
+  { id: "b5", name: "Google Play", icon: "▶", color: "#4caf50", bg: "#0a1a0a" },
+  { id: "b6", name: "PlayStation", icon: "◈", color: "#0070d1", bg: "#001428" },
+  { id: "b7", name: "Xbox", icon: "✕", color: "#107c10", bg: "#061a06" },
+  { id: "b8", name: "Valorant", icon: "◤", color: "#ff4655", bg: "#1a0508" },
+];
+
+// ─── Store: Top-Ups ───
+const storeTopUps = [
+  { id: "t1", name: "BGMI India", icon: "🎯", color: "#ff9800" },
+  { id: "t2", name: "Marvel Rivals", icon: "◆", color: "#e53935" },
+  { id: "t3", name: "MOBA Legends", icon: "⚔", color: "#6366f1" },
+  { id: "t4", name: "Road to Valor", icon: "⚔", color: "#d84315" },
+  { id: "t5", name: "Ludo Club", icon: "🎲", color: "#1e88e5" },
+  { id: "t6", name: "AFK Journey", icon: "◎", color: "#7c4dff" },
+  { id: "t7", name: "Teen Patti Gold", icon: "♠", color: "#e53935" },
+];
+
+// ─── Store: Vouchers ───
+const storeVouchers = [
+  { id: "v1", name: "Google Play", cat: "platform", icon: "▶", color: "#4caf50", bg: "#fff" },
+  { id: "v2", name: "App Store Code", cat: "platform", icon: "", color: "#0091ea", bg: "#e3f2fd" },
+  { id: "v3", name: "Steam", cat: "platform", icon: "◎", color: "#1b2838", bg: "#e8eaf6" },
+  { id: "v4", name: "PlayStation", cat: "platform", icon: "◈", color: "#0070d1", bg: "#e3f2fd" },
+  { id: "v5", name: "Xbox", cat: "platform", icon: "✕", color: "#107c10", bg: "#e8f5e9" },
+  { id: "v6", name: "Valorant", cat: "platform", icon: "◤", color: "#ff4655", bg: "#fce4ec" },
+  { id: "v7", name: "Pizza Hut", cat: "gift-cards", icon: "🍕", color: "#e53935", discount: "4%" },
+  { id: "v8", name: "FC Mobile", cat: "games", icon: "⚽", color: "#1db954" },
+  { id: "v9", name: "Rainbow Six", cat: "games", icon: "◎", color: "#2196f3" },
+  { id: "v10", name: "McDonald's", cat: "gift-cards", icon: "🍔", color: "#ffc107", discount: "4%" },
+  { id: "v11", name: "Baskin Robbins", cat: "gift-cards", icon: "🍦", color: "#e91e63", discount: "4%" },
+  { id: "v12", name: "Domino's Pizza", cat: "gift-cards", icon: "🍕", color: "#0d47a1", discount: "4%" },
+];
+
+// ─── Store: PC Games ───
+const storePCGames = [
+  { id: "g1", name: "Skyrim Special Ed.", price: "₹381", original: "₹1,799", discount: "-78%", color: "#546e7a", icon: "⚔" },
+  { id: "g2", name: "Doom Eternal", price: "₹380", original: "₹1,799", discount: "-78%", color: "#e53935", icon: "☠" },
+  { id: "g3", name: "DOOM Eternal Deluxe", price: "₹677", original: "₹3,199", discount: "-78%", color: "#b71c1c", icon: "☠" },
+  { id: "g4", name: "Fallout 76", price: "₹529", original: "₹2,499", discount: "-78%", color: "#ffc107", icon: "☢" },
+  { id: "g5", name: "Elder Scrolls Online", price: "₹499", original: "₹1,999", discount: "-75%", color: "#8d6e63", icon: "⚔" },
+  { id: "g6", name: "Fallout 3 GOTY", price: "₹264", original: "₹1,199", discount: "-78%", color: "#4caf50", icon: "☢" },
+];
+
+// ─── Store: All items for search ───
+const ALL_STORE_ITEMS = [
+  ...storeBrands.map(b => ({ ...b, storeCategory: "brands", title: b.name })),
+  ...storeTopUps.map(t => ({ ...t, storeCategory: "topups", title: t.name })),
+  ...storeVouchers.map(v => ({ ...v, storeCategory: "vouchers", title: v.name })),
+  ...storePCGames.map(g => ({ ...g, storeCategory: "games", title: g.name })),
+];
+
 // ─── Cinematic Game Art Component (BRIGHTER) ───
 function CinematicArt({ title, size = "md", style: extraStyle }) {
   const art = getGameArt(title);
@@ -461,10 +518,11 @@ ALL_GAMES.forEach(g => {
 });
 
 // ─── Search Overlay ───
-function SearchOverlay({ onClose, onSelect }) {
+function SearchOverlay({ onClose, onSelect, context }) {
   const [query, setQuery] = useState("");
   const [animIn, setAnimIn] = useState(false);
   const inputRef = useRef(null);
+  const isStore = context === "store";
 
   useEffect(() => {
     setTimeout(() => setAnimIn(true), 30);
@@ -472,11 +530,19 @@ function SearchOverlay({ onClose, onSelect }) {
   }, []);
 
   const q = query.toLowerCase().trim();
-  const results = q.length === 0 ? [] : SEARCH_INDEX.filter(g =>
+
+  // Store search: search across all store items
+  const storeResults = q.length === 0 ? [] : ALL_STORE_ITEMS.filter(item =>
+    item.title.toLowerCase().includes(q) || (item.storeCategory || "").includes(q)
+  );
+  // Game search
+  const gameResults = q.length === 0 ? [] : SEARCH_INDEX.filter(g =>
     g.title.toLowerCase().includes(q) || g.genre.toLowerCase().includes(q)
   );
+  const results = isStore ? storeResults : gameResults;
 
   const genres = [...new Set(SEARCH_INDEX.map(g => g.genre))].slice(0, 8);
+  const storeCategories = ["Brands", "Top-Ups", "Vouchers", "Games"];
 
   return (
     <div style={{
@@ -504,7 +570,7 @@ function SearchOverlay({ onClose, onSelect }) {
             ref={inputRef}
             value={query}
             onChange={e => setQuery(e.target.value)}
-            placeholder="Search games, genres..."
+            placeholder={isStore ? "Search store, vouchers, brands..." : "Search games, genres..."}
             style={{
               flex: 1, background: "none", border: "none", outline: "none",
               fontFamily: FONT.body, fontSize: 14, color: C.text,
@@ -523,39 +589,61 @@ function SearchOverlay({ onClose, onSelect }) {
       <div style={{ flex: 1, overflowY: "auto", padding: "0 16px" }}>
         {q.length === 0 ? (
           <div>
-            <div style={{ fontFamily: FONT.display, fontSize: 13, fontWeight: 700, color: C.textDim, letterSpacing: 0.8, textTransform: "uppercase", padding: "16px 0 10px" }}>Browse by Genre</div>
+            <div style={{ fontFamily: FONT.display, fontSize: 13, fontWeight: 700, color: C.textDim, letterSpacing: 0.8, textTransform: "uppercase", padding: "16px 0 10px" }}>{isStore ? "Browse Store" : "Browse by Genre"}</div>
             <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
-              {genres.map(genre => (
-                <span key={genre} onClick={() => setQuery(genre)} style={{
+              {(isStore ? storeCategories : genres).map(cat => (
+                <span key={cat} onClick={() => setQuery(cat.toLowerCase())} style={{
                   padding: "8px 16px", borderRadius: 20,
                   background: C.surface, border: `1px solid ${C.borderLight}`,
                   fontFamily: FONT.body, fontSize: 12, color: C.textSec,
                   cursor: "pointer", fontWeight: 500,
-                }}>{genre}</span>
+                }}>{cat}</span>
               ))}
             </div>
-            <div style={{ fontFamily: FONT.display, fontSize: 13, fontWeight: 700, color: C.textDim, letterSpacing: 0.8, textTransform: "uppercase", padding: "24px 0 10px" }}>Popular</div>
-            {SEARCH_INDEX.slice(0, 6).map((game, i) => (
-              <div key={game.id} onClick={() => onSelect(game)} style={{
-                display: "flex", alignItems: "center", gap: 12, padding: "10px 0",
-                borderBottom: `1px solid ${C.border}`, cursor: "pointer",
-                animation: `fadeUp 0.25s ease ${i * 0.04}s both`,
-              }}>
-                <div style={{ width: 44, height: 44, borderRadius: 12, overflow: "hidden", flexShrink: 0, border: `1px solid ${C.border}` }}>
-                  <CinematicArt title={game.title} size="sm" />
-                </div>
-                <div style={{ flex: 1, minWidth: 0 }}>
-                  <div style={{ fontFamily: FONT.body, fontSize: 13, fontWeight: 600, color: C.text, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{game.title}</div>
-                  <div style={{ fontFamily: FONT.body, fontSize: 11, color: C.textDim, marginTop: 2 }}>{game.genre} {game.passType === "allscreen" ? "• All Screen" : "• Mobile"}</div>
-                </div>
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke={C.textDim} strokeWidth="2"><polyline points="9 18 15 12 9 6"/></svg>
-              </div>
-            ))}
+            {isStore ? (
+              <>
+                <div style={{ fontFamily: FONT.display, fontSize: 13, fontWeight: 700, color: C.textDim, letterSpacing: 0.8, textTransform: "uppercase", padding: "24px 0 10px" }}>Popular in Store</div>
+                {ALL_STORE_ITEMS.filter((_,i) => i % 4 === 0).slice(0, 6).map((item, i) => (
+                  <div key={item.id} style={{
+                    display: "flex", alignItems: "center", gap: 12, padding: "10px 0",
+                    borderBottom: `1px solid ${C.border}`, cursor: "pointer",
+                    animation: `fadeUp 0.25s ease ${i * 0.04}s both`,
+                  }}>
+                    <div style={{ width: 44, height: 44, borderRadius: 12, background: C.card, border: `1px solid ${C.border}`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 22, color: item.color || C.textSec, flexShrink: 0 }}>{item.icon}</div>
+                    <div style={{ flex: 1, minWidth: 0 }}>
+                      <div style={{ fontFamily: FONT.body, fontSize: 13, fontWeight: 600, color: C.text }}>{item.title}</div>
+                      <div style={{ fontFamily: FONT.body, fontSize: 10, color: C.textDim, marginTop: 2, textTransform: "capitalize" }}>{item.storeCategory}</div>
+                    </div>
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke={C.textDim} strokeWidth="2"><polyline points="9 18 15 12 9 6"/></svg>
+                  </div>
+                ))}
+              </>
+            ) : (
+              <>
+                <div style={{ fontFamily: FONT.display, fontSize: 13, fontWeight: 700, color: C.textDim, letterSpacing: 0.8, textTransform: "uppercase", padding: "24px 0 10px" }}>Popular</div>
+                {SEARCH_INDEX.slice(0, 6).map((game, i) => (
+                  <div key={game.id} onClick={() => onSelect(game)} style={{
+                    display: "flex", alignItems: "center", gap: 12, padding: "10px 0",
+                    borderBottom: `1px solid ${C.border}`, cursor: "pointer",
+                    animation: `fadeUp 0.25s ease ${i * 0.04}s both`,
+                  }}>
+                    <div style={{ width: 44, height: 44, borderRadius: 12, overflow: "hidden", flexShrink: 0, border: `1px solid ${C.border}` }}>
+                      <CinematicArt title={game.title} size="sm" />
+                    </div>
+                    <div style={{ flex: 1, minWidth: 0 }}>
+                      <div style={{ fontFamily: FONT.body, fontSize: 13, fontWeight: 600, color: C.text, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{game.title}</div>
+                      <div style={{ fontFamily: FONT.body, fontSize: 11, color: C.textDim, marginTop: 2 }}>{game.genre} {game.passType === "allscreen" ? "• All Screen" : "• Mobile"}</div>
+                    </div>
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke={C.textDim} strokeWidth="2"><polyline points="9 18 15 12 9 6"/></svg>
+                  </div>
+                ))}
+              </>
+            )}
           </div>
         ) : results.length === 0 ? (
           <div style={{ textAlign: "center", padding: "60px 20px" }}>
-            <div style={{ fontSize: 40, marginBottom: 16, opacity: 0.3 }}>🎮</div>
-            <div style={{ fontFamily: FONT.display, fontSize: 16, fontWeight: 700, color: C.textSec }}>No games found</div>
+            <div style={{ fontSize: 40, marginBottom: 16, opacity: 0.3 }}>{isStore ? "🛒" : "🎮"}</div>
+            <div style={{ fontFamily: FONT.display, fontSize: 16, fontWeight: 700, color: C.textSec }}>{isStore ? "No store items found" : "No games found"}</div>
             <div style={{ fontFamily: FONT.body, fontSize: 12, color: C.textDim, marginTop: 6 }}>Try a different search term</div>
           </div>
         ) : (
@@ -563,30 +651,45 @@ function SearchOverlay({ onClose, onSelect }) {
             <div style={{ fontFamily: FONT.body, fontSize: 11, color: C.textDim, padding: "12px 0 8px", letterSpacing: 0.3 }}>
               {results.length} result{results.length !== 1 ? "s" : ""}
             </div>
-            {results.map((game, i) => {
-              const art = getGameArt(game.title);
+            {results.map((item, i) => {
+              const isStoreItem = !!item.storeCategory;
+              const art = isStoreItem ? null : getGameArt(item.title);
               return (
-                <div key={`${game.id}-${i}`} onClick={() => onSelect(game)} style={{
+                <div key={`${item.id}-${i}`} onClick={() => !isStoreItem && onSelect(item)} style={{
                   display: "flex", alignItems: "center", gap: 12, padding: "10px 0",
                   borderBottom: `1px solid ${C.border}`, cursor: "pointer",
                   animation: `fadeUp 0.2s ease ${i * 0.03}s both`,
                 }}>
-                  <div style={{ width: 50, height: 50, borderRadius: 12, overflow: "hidden", flexShrink: 0, border: `1px solid ${art.colors[0]}25` }}>
-                    <CinematicArt title={game.title} size="sm" />
-                  </div>
-                  <div style={{ flex: 1, minWidth: 0 }}>
-                    <div style={{ fontFamily: FONT.body, fontSize: 13, fontWeight: 600, color: C.text, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{game.title}</div>
-                    <div style={{ display: "flex", alignItems: "center", gap: 6, marginTop: 3 }}>
-                      <span style={{ fontFamily: FONT.body, fontSize: 10, color: C.textDim, letterSpacing: 0.3, textTransform: "uppercase", fontWeight: 500 }}>{game.genre}</span>
-                      <span style={{ width: 3, height: 3, borderRadius: "50%", background: C.textMicro }} />
-                      <span style={{
-                        fontFamily: FONT.body, fontSize: 9, fontWeight: 600, letterSpacing: 0.5,
-                        color: game.passType === "allscreen" ? C.cyan : C.accent,
-                      }}>{game.passType === "allscreen" ? "ALL SCREEN" : "MOBILE"}</span>
+                  {isStoreItem ? (
+                    <div style={{ width: 50, height: 50, borderRadius: 12, background: C.card, border: `1px solid ${C.border}`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 22, color: item.color || C.textSec, flexShrink: 0 }}>{item.icon}</div>
+                  ) : (
+                    <div style={{ width: 50, height: 50, borderRadius: 12, overflow: "hidden", flexShrink: 0, border: `1px solid ${art.colors[0]}25` }}>
+                      <CinematicArt title={item.title} size="sm" />
                     </div>
-                    {game.sentiment && (
+                  )}
+                  <div style={{ flex: 1, minWidth: 0 }}>
+                    <div style={{ fontFamily: FONT.body, fontSize: 13, fontWeight: 600, color: C.text, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{item.title}</div>
+                    <div style={{ display: "flex", alignItems: "center", gap: 6, marginTop: 3 }}>
+                      {isStoreItem ? (
+                        <span style={{ fontFamily: FONT.body, fontSize: 10, color: C.textDim, letterSpacing: 0.3, textTransform: "capitalize", fontWeight: 500 }}>{item.storeCategory}</span>
+                      ) : (
+                        <>
+                          <span style={{ fontFamily: FONT.body, fontSize: 10, color: C.textDim, letterSpacing: 0.3, textTransform: "uppercase", fontWeight: 500 }}>{item.genre}</span>
+                          <span style={{ width: 3, height: 3, borderRadius: "50%", background: C.textMicro }} />
+                          <span style={{ fontFamily: FONT.body, fontSize: 9, fontWeight: 600, letterSpacing: 0.5, color: item.passType === "allscreen" ? C.cyan : C.accent }}>{item.passType === "allscreen" ? "ALL SCREEN" : "MOBILE"}</span>
+                        </>
+                      )}
+                    </div>
+                    {!isStoreItem && item.sentiment && (
                       <div style={{ fontFamily: FONT.body, fontSize: 10, color: C.accent, marginTop: 2, fontWeight: 500 }}>
-                        {game.sentiment} ({game.reviews})
+                        {item.sentiment} ({item.reviews})
+                      </div>
+                    )}
+                    {isStoreItem && item.price && (
+                      <div style={{ display: "flex", alignItems: "center", gap: 4, marginTop: 2 }}>
+                        <span style={{ fontFamily: FONT.display, fontSize: 11, fontWeight: 700, color: C.accent }}>{item.price}</span>
+                        {item.original && <span style={{ fontFamily: FONT.body, fontSize: 9, color: C.textDim, textDecoration: "line-through" }}>{item.original}</span>}
+                        {item.discount && <span style={{ fontFamily: FONT.body, fontSize: 8, fontWeight: 700, color: C.accent, background: `${C.accent}18`, padding: "1px 4px", borderRadius: 3 }}>{item.discount}</span>}
                       </div>
                     )}
                   </div>
@@ -1076,10 +1179,10 @@ function GameDetailPage({ game, onClose, passType, onSubscribe, onGameSelect }) 
           </button>
         ) : (
           <button onClick={() => onSubscribe && onSubscribe(passType === "allscreen" ? 1 : 0)} style={{
-            width: "100%", padding: "16px 0", borderRadius: 30, border: "none",
+            width: "100%", padding: "13px 0", borderRadius: 26, border: "none",
             background: `linear-gradient(135deg, ${C.accent}, ${C.accentMuted})`,
-            color: "#000", fontFamily: FONT.display, fontWeight: 700, fontSize: 15,
-            letterSpacing: 0.8, cursor: "pointer", textTransform: "uppercase",
+            color: "#000", fontFamily: FONT.display, fontWeight: 500, fontSize: 12,
+            letterSpacing: 0.6, cursor: "pointer", textTransform: "uppercase",
             boxShadow: `0 4px 24px ${C.accentGlow}`,
           }}>{passType === "allscreen" ? "Subscribe to All Screen Pass" : "Subscribe to Mobile Pass"}</button>
         )}
@@ -1285,43 +1388,239 @@ function AllScreenTab({ onGameSelect }) {
 // ─── STORE TAB ───
 function StoreTab() {
   const [animIn, setAnimIn] = useState(false);
+  const [subTab, setSubTab] = useState("home");
+  const [voucherFilter, setVoucherFilter] = useState("all");
   useEffect(() => { setTimeout(() => setAnimIn(true), 60); }, []);
+
+  const subTabs = [
+    { id: "home", label: "Home", icon: <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/></svg> },
+    { id: "topups", label: "Top-Ups", icon: <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg> },
+    { id: "vouchers", label: "Vouchers", icon: <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg> },
+    { id: "games", label: "Games", icon: <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="2" y="6" width="20" height="12" rx="2"/><line x1="6" y1="12" x2="6.01" y2="12" strokeWidth="3" strokeLinecap="round"/><line x1="18" y1="12" x2="18.01" y2="12" strokeWidth="3" strokeLinecap="round"/></svg> },
+  ];
+
+  const filteredVouchers = voucherFilter === "all" ? storeVouchers :
+    storeVouchers.filter(v => v.cat === voucherFilter);
 
   return (
     <div style={{ opacity: animIn ? 1 : 0, transition: "opacity 0.5s ease", paddingTop: 80 }}>
-      <div style={{ padding: "0 20px 10px" }}>
-        <div style={{ fontFamily: FONT.display, fontSize: 28, fontWeight: 800, color: C.text, letterSpacing: -0.5 }}>Store</div>
-        <div style={{ fontFamily: FONT.body, fontSize: 12, color: C.textDim, marginTop: 4, letterSpacing: 0.3 }}>Currencies, DLCs & subscriptions</div>
+      {/* Header */}
+      <div style={{ padding: "0 20px 6px" }}>
+        <div style={{ fontFamily: FONT.display, fontSize: 24, fontWeight: 800, color: C.text, letterSpacing: -0.5 }}>JioGames Store</div>
+        <div style={{ fontFamily: FONT.body, fontSize: 11, color: C.textDim, marginTop: 2, letterSpacing: 0.3 }}>Powered by JioMart</div>
       </div>
-      <div style={{ display: "flex", gap: 10, padding: "16px 20px", overflowX: "auto" }}>
-        {storeCoupons.map(c => (
-          <div key={c.id} style={{ minWidth: 200, padding: "18px 18px 16px", borderRadius: 16, position: "relative", overflow: "hidden", background: C.card, border: `1px solid ${c.color}15`, cursor: "pointer" }}>
-            <div style={{ position: "absolute", top: -20, right: -20, width: 80, height: 80, borderRadius: "50%", background: `radial-gradient(circle, ${c.color}12, transparent 70%)` }} />
-            <div style={{ fontFamily: FONT.display, fontSize: 22, fontWeight: 800, color: c.color, letterSpacing: -0.3 }}>{c.title}</div>
-            <div style={{ fontFamily: FONT.body, fontSize: 12, color: C.textSec, marginTop: 4 }}>{c.desc}</div>
-            <div style={{ fontFamily: FONT.mono, fontSize: 10, color: C.textDim, marginTop: 10, letterSpacing: 1.5, fontWeight: 500, padding: "4px 10px", borderRadius: 6, background: "rgba(255,255,255,0.03)", display: "inline-block", border: `1px solid ${C.border}` }}>{c.code}</div>
-          </div>
-        ))}
+
+      {/* Sub-tab navigation */}
+      <div style={{ display: "flex", gap: 0, padding: "12px 20px 0", borderBottom: `1px solid ${C.border}` }}>
+        {subTabs.map(st => {
+          const active = subTab === st.id;
+          return (
+            <button key={st.id} onClick={() => { setSubTab(st.id); setVoucherFilter("all"); }} style={{
+              flex: 1, display: "flex", flexDirection: "column", alignItems: "center", gap: 5,
+              padding: "8px 0 10px", background: "none", border: "none",
+              borderBottom: active ? `2px solid ${C.accent}` : "2px solid transparent",
+              cursor: "pointer", transition: "all 0.2s ease",
+            }}>
+              <div style={{ color: active ? C.accent : C.textDim, display: "flex", alignItems: "center", justifyContent: "center" }}>{st.icon}</div>
+              <span style={{ fontFamily: FONT.body, fontSize: 10, fontWeight: active ? 600 : 400, color: active ? C.text : C.textDim, letterSpacing: 0.3 }}>{st.label}</span>
+            </button>
+          );
+        })}
       </div>
-      <div style={{ marginTop: 8 }}><SectionTitle>Game Currencies & DLCs</SectionTitle></div>
-      <div style={{ padding: "0 20px" }}>
-        {storeItems.map((item, i) => (
-          <div key={item.id} style={{ display: "flex", alignItems: "center", gap: 14, padding: "14px 16px", borderRadius: 16, marginBottom: 8, background: C.card, border: `1px solid ${C.border}`, cursor: "pointer", animation: `fadeUp 0.3s ease ${i * 0.04}s both` }}>
-            <div style={{ width: 50, height: 50, borderRadius: 14, flexShrink: 0, overflow: "hidden", border: `1px solid ${item.color}15` }}>
-              <CinematicArt title={item.title} size="sm" />
+
+      {/* ─── HOME TAB ─── */}
+      {subTab === "home" && (
+        <div style={{ animation: "fadeUp 0.25s ease" }}>
+          {/* Promo banner */}
+          <div style={{ margin: "16px 20px 0", borderRadius: 16, overflow: "hidden", position: "relative", height: 140, background: "linear-gradient(135deg, #1b2838 0%, #2a475e 50%, #1b2838 100%)", border: `1px solid ${C.border}` }}>
+            <div style={{ position: "absolute", inset: 0, display: "flex", flexDirection: "column", justifyContent: "center", padding: "0 24px" }}>
+              <div style={{ fontFamily: FONT.display, fontSize: 11, fontWeight: 600, color: C.accent, letterSpacing: 1.5, textTransform: "uppercase", marginBottom: 6 }}>Steam Spring Sale</div>
+              <div style={{ fontFamily: FONT.display, fontSize: 20, fontWeight: 800, color: "#fff", lineHeight: 1.2 }}>Up to 78% Off</div>
+              <div style={{ fontFamily: FONT.body, fontSize: 11, color: "rgba(255,255,255,0.5)", marginTop: 6 }}>Refresh your game collection</div>
             </div>
-            <div style={{ flex: 1, minWidth: 0 }}>
-              <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
-                <span style={{ fontFamily: FONT.body, fontSize: 13, fontWeight: 600, color: C.text }}>{item.title}</span>
-                {item.tag && <span style={{ padding: "2px 7px", borderRadius: 4, fontSize: 9, fontWeight: 600, fontFamily: FONT.body, background: item.tag === "New" ? `${C.accent}12` : item.tag === "Popular" ? `${C.red}12` : `${C.gold}12`, color: item.tag === "New" ? C.accent : item.tag === "Popular" ? C.red : C.gold, letterSpacing: 0.6, textTransform: "uppercase" }}>{item.tag}</span>}
+            <div style={{ position: "absolute", right: 12, top: "50%", transform: "translateY(-50%)", fontSize: 60, opacity: 0.1, color: "#fff" }}>◎</div>
+          </div>
+
+          {/* Coupons */}
+          <div style={{ display: "flex", gap: 10, padding: "16px 20px", overflowX: "auto", scrollbarWidth: "none" }}>
+            {storeCoupons.map(c => (
+              <div key={c.id} style={{ minWidth: 180, padding: "14px 16px", borderRadius: 14, position: "relative", overflow: "hidden", background: C.card, border: `1px solid ${c.color}15`, cursor: "pointer" }}>
+                <div style={{ position: "absolute", top: -20, right: -20, width: 70, height: 70, borderRadius: "50%", background: `radial-gradient(circle, ${c.color}12, transparent 70%)` }} />
+                <div style={{ fontFamily: FONT.display, fontSize: 18, fontWeight: 800, color: c.color, letterSpacing: -0.3 }}>{c.title}</div>
+                <div style={{ fontFamily: FONT.body, fontSize: 11, color: C.textSec, marginTop: 3 }}>{c.desc}</div>
+                <div style={{ fontFamily: FONT.mono, fontSize: 9, color: C.textDim, marginTop: 8, letterSpacing: 1.5, fontWeight: 500, padding: "3px 8px", borderRadius: 5, background: "rgba(255,255,255,0.03)", display: "inline-block", border: `1px solid ${C.border}` }}>{c.code}</div>
               </div>
-              <div style={{ fontFamily: FONT.body, fontSize: 11, color: C.textDim, marginTop: 2 }}>{item.desc}</div>
-            </div>
-            <button style={{ padding: "9px 18px", borderRadius: 10, background: "rgba(255,255,255,0.05)", border: `1px solid ${C.borderLight}`, fontFamily: FONT.display, fontSize: 13, fontWeight: 700, color: C.text, cursor: "pointer" }}>{item.price}</button>
+            ))}
           </div>
-        ))}
-      </div>
-      <div style={{ height: 120 }} />
+
+          {/* Brands */}
+          <div style={{ marginTop: 4 }}><SectionTitle>Brands</SectionTitle></div>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 12, padding: "0 20px" }}>
+            {storeBrands.map((b, i) => (
+              <div key={b.id} onClick={() => setSubTab("topups")} style={{
+                display: "flex", flexDirection: "column", alignItems: "center", gap: 8,
+                cursor: "pointer", animation: `fadeUp 0.25s ease ${i * 0.04}s both`,
+              }}>
+                <div style={{
+                  width: "100%", aspectRatio: "1", borderRadius: 16,
+                  background: C.card, border: `1px solid ${C.border}`,
+                  display: "flex", alignItems: "center", justifyContent: "center",
+                  fontSize: 28, color: b.color,
+                  transition: "border-color 0.2s",
+                }}>{b.icon}</div>
+                <span style={{ fontFamily: FONT.body, fontSize: 9, color: C.textSec, textAlign: "center", lineHeight: 1.2, fontWeight: 500 }}>{b.name}</span>
+              </div>
+            ))}
+          </div>
+
+          {/* Quick deals */}
+          <div style={{ marginTop: 24 }}><SectionTitle>Quick Deals</SectionTitle></div>
+          <div style={{ padding: "0 20px" }}>
+            {storeItems.slice(0, 4).map((item, i) => (
+              <div key={item.id} style={{ display: "flex", alignItems: "center", gap: 14, padding: "12px 14px", borderRadius: 14, marginBottom: 8, background: C.card, border: `1px solid ${C.border}`, cursor: "pointer", animation: `fadeUp 0.25s ease ${i * 0.04}s both` }}>
+                <div style={{ width: 44, height: 44, borderRadius: 12, flexShrink: 0, overflow: "hidden", border: `1px solid ${item.color}15` }}>
+                  <CinematicArt title={item.title} size="sm" />
+                </div>
+                <div style={{ flex: 1, minWidth: 0 }}>
+                  <span style={{ fontFamily: FONT.body, fontSize: 12, fontWeight: 600, color: C.text }}>{item.title}</span>
+                  <div style={{ fontFamily: FONT.body, fontSize: 10, color: C.textDim, marginTop: 1 }}>{item.desc}</div>
+                </div>
+                <button style={{ padding: "7px 14px", borderRadius: 8, background: "rgba(255,255,255,0.05)", border: `1px solid ${C.borderLight}`, fontFamily: FONT.display, fontSize: 12, fontWeight: 700, color: C.text, cursor: "pointer" }}>{item.price}</button>
+              </div>
+            ))}
+          </div>
+          <div style={{ height: 100 }} />
+        </div>
+      )}
+
+      {/* ─── TOP-UPS TAB ─── */}
+      {subTab === "topups" && (
+        <div style={{ animation: "fadeUp 0.25s ease", padding: "16px 20px" }}>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 12 }}>
+            {storeTopUps.map((t, i) => (
+              <div key={t.id} style={{
+                display: "flex", flexDirection: "column", alignItems: "center",
+                cursor: "pointer", animation: `fadeUp 0.25s ease ${i * 0.04}s both`,
+              }}>
+                <div style={{
+                  width: "100%", aspectRatio: "1", borderRadius: 16,
+                  background: `linear-gradient(145deg, ${t.color}20 0%, ${t.color}08 100%)`,
+                  border: `1px solid ${t.color}20`,
+                  display: "flex", alignItems: "center", justifyContent: "center",
+                  fontSize: 36, color: t.color,
+                  position: "relative", overflow: "hidden",
+                }}>
+                  {t.icon}
+                  <div style={{ position: "absolute", bottom: 0, left: 0, right: 0, padding: "20px 8px 8px", background: "linear-gradient(transparent, rgba(0,0,0,0.7))" }}>
+                    <div style={{ fontFamily: FONT.body, fontSize: 10, fontWeight: 600, color: "#fff", textAlign: "center", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{t.name}</div>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+          <div style={{ height: 100 }} />
+        </div>
+      )}
+
+      {/* ─── VOUCHERS TAB ─── */}
+      {subTab === "vouchers" && (
+        <div style={{ animation: "fadeUp 0.25s ease" }}>
+          {/* Filter chips */}
+          <div style={{ display: "flex", gap: 8, padding: "14px 20px", overflowX: "auto", scrollbarWidth: "none" }}>
+            {[{ id: "all", label: "All" }, { id: "platform", label: "Platform" }, { id: "gift-cards", label: "Gift Cards" }, { id: "games", label: "Games" }].map(f => (
+              <button key={f.id} onClick={() => setVoucherFilter(f.id)} style={{
+                padding: "6px 16px", borderRadius: 20, flexShrink: 0,
+                background: voucherFilter === f.id ? C.accent : "transparent",
+                border: voucherFilter === f.id ? "none" : `1px solid ${C.borderLight}`,
+                color: voucherFilter === f.id ? "#000" : C.textSec,
+                fontFamily: FONT.body, fontSize: 11, fontWeight: voucherFilter === f.id ? 600 : 400,
+                cursor: "pointer", letterSpacing: 0.3,
+              }}>{f.label}</button>
+            ))}
+          </div>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 12, padding: "0 20px" }}>
+            {filteredVouchers.map((v, i) => (
+              <div key={v.id} style={{
+                cursor: "pointer", animation: `fadeUp 0.25s ease ${i * 0.04}s both`,
+                position: "relative",
+              }}>
+                <div style={{
+                  width: "100%", aspectRatio: "1", borderRadius: 16,
+                  background: v.cat === "gift-cards" ? C.surface : C.card,
+                  border: `1px solid ${C.border}`,
+                  display: "flex", alignItems: "center", justifyContent: "center",
+                  fontSize: v.cat === "gift-cards" ? 32 : 28, color: v.color,
+                  position: "relative", overflow: "hidden",
+                }}>
+                  {v.icon}
+                  {v.discount && (
+                    <div style={{
+                      position: "absolute", top: 6, left: 6,
+                      padding: "2px 7px", borderRadius: 6,
+                      background: C.accent, fontFamily: FONT.body,
+                      fontSize: 8, fontWeight: 700, color: "#000",
+                      letterSpacing: 0.3,
+                    }}>{v.discount} Discount</div>
+                  )}
+                </div>
+                <div style={{ fontFamily: FONT.body, fontSize: 10, color: C.textSec, marginTop: 6, textAlign: "center", fontWeight: 500, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{v.name}</div>
+              </div>
+            ))}
+          </div>
+          <div style={{ height: 100 }} />
+        </div>
+      )}
+
+      {/* ─── GAMES TAB ─── */}
+      {subTab === "games" && (
+        <div style={{ animation: "fadeUp 0.25s ease", padding: "16px 20px" }}>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: 12 }}>
+            {storePCGames.map((g, i) => {
+              const art = getGameArt(g.name);
+              return (
+                <div key={g.id} style={{
+                  borderRadius: 16, overflow: "hidden", cursor: "pointer",
+                  background: C.card, border: `1px solid ${C.border}`,
+                  animation: `fadeUp 0.25s ease ${i * 0.05}s both`,
+                }}>
+                  <div style={{
+                    width: "100%", aspectRatio: "1", position: "relative",
+                    background: `linear-gradient(145deg, ${art.colors[0]}30 0%, ${art.colors[1]}15 50%, ${art.colors[2]}08 100%)`,
+                  }}>
+                    <div style={{
+                      position: "absolute", inset: 0,
+                      display: "flex", alignItems: "center", justifyContent: "center",
+                      fontSize: 48, opacity: 0.3, color: art.colors[2],
+                      filter: `drop-shadow(0 0 30px ${art.colors[0]})`,
+                    }}>{g.icon}</div>
+                    {/* Steam badge */}
+                    <div style={{
+                      position: "absolute", bottom: 8, right: 8,
+                      width: 26, height: 26, borderRadius: 8,
+                      background: "rgba(27,40,56,0.9)", border: "1px solid rgba(255,255,255,0.1)",
+                      display: "flex", alignItems: "center", justifyContent: "center",
+                      fontSize: 12, color: "#66c0f4",
+                    }}>◎</div>
+                  </div>
+                  <div style={{ padding: "10px 12px 12px" }}>
+                    <div style={{ fontFamily: FONT.body, fontSize: 11, fontWeight: 600, color: C.text, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{g.name}</div>
+                    <div style={{ display: "flex", alignItems: "center", gap: 6, marginTop: 6 }}>
+                      <span style={{ fontFamily: FONT.display, fontSize: 13, fontWeight: 700, color: C.text }}>{g.price}</span>
+                      <span style={{ fontFamily: FONT.body, fontSize: 10, color: C.textDim, textDecoration: "line-through" }}>{g.original}</span>
+                      <span style={{
+                        padding: "2px 6px", borderRadius: 4,
+                        background: `${C.accent}18`, fontFamily: FONT.body,
+                        fontSize: 9, fontWeight: 700, color: C.accent,
+                      }}>{g.discount}</span>
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+          <div style={{ height: 100 }} />
+        </div>
+      )}
     </div>
   );
 }
@@ -1528,12 +1827,12 @@ function JioGamesApp() {
         </div>
       </div>
 
-      {(tab === "mobile" || tab === "allscreen") && !selectedGame && (
+      {(tab === "mobile" || tab === "allscreen" || tab === "store") && !selectedGame && (
         <AppHeader onProfile={() => handleNav("profile")} onSubscribe={() => handleNav("subscribe")} onSearch={() => setShowSearch(true)} />
       )}
 
       {showSearch && (
-        <SearchOverlay onClose={() => setShowSearch(false)} onSelect={handleGameSelect} />
+        <SearchOverlay onClose={() => setShowSearch(false)} onSelect={handleGameSelect} context={tab} />
       )}
 
       <div ref={scrollRef} style={{ position: "absolute", top: 0, left: 0, right: 0, bottom: 0, overflowY: "auto", overflowX: "hidden", paddingBottom: 68 }}>
