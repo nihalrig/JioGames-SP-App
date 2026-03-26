@@ -1758,7 +1758,7 @@ function ProfileMenuItem({ icon, label, color }) {
   );
 }
 
-function ProfileTab({ onClose }) {
+function ProfileTab({ onClose, onSubscribe }) {
   const [animIn, setAnimIn] = useState(false);
   useEffect(() => { setTimeout(() => setAnimIn(true), 60); }, []);
 
@@ -1779,19 +1779,47 @@ function ProfileTab({ onClose }) {
 
       {/* My Plans */}
       <CollapsibleSection title="My Plans">
-        <ProfileMenuItem icon="📋" label="Subscription" color={C.accent} />
-      </CollapsibleSection>
-
-      {/* Esports */}
-      <CollapsibleSection title="Esports">
-        <ProfileMenuItem icon="🏆" label="My Tournaments" color={C.accent} />
-        <ProfileMenuItem icon="👥" label="My Teams" color={C.accent} />
-        <ProfileMenuItem icon="⚔" label="Join Tournament" color={C.accent} />
-      </CollapsibleSection>
-
-      {/* My Linked Stores */}
-      <CollapsibleSection title="My Linked Stores">
-        <ProfileMenuItem icon="🔗" label="Linked Stores" color={C.accent} />
+        <div style={{ padding: "4px 0 8px" }}>
+          {/* Mobile Pass card */}
+          <div style={{
+            borderRadius: 16, overflow: "hidden",
+            background: `linear-gradient(135deg, ${C.surface} 0%, ${C.card} 100%)`,
+            border: `1px solid ${C.border}`, padding: "18px",
+          }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 14 }}>
+              <div style={{
+                width: 42, height: 42, borderRadius: 12,
+                background: `linear-gradient(135deg, ${C.accent}15, ${C.accent}05)`,
+                border: `1px solid ${C.accent}20`,
+                display: "flex", alignItems: "center", justifyContent: "center",
+              }}>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke={C.accent} strokeWidth="2"><rect x="5" y="2" width="14" height="20" rx="3"/><line x1="12" y1="18" x2="12" y2="18.01" strokeWidth="2.5" strokeLinecap="round"/></svg>
+              </div>
+              <div style={{ flex: 1 }}>
+                <div style={{ fontFamily: FONT.display, fontSize: 15, fontWeight: 700, color: C.text }}>Mobile Pass</div>
+                <div style={{ display: "flex", alignItems: "center", gap: 6, marginTop: 3 }}>
+                  <span style={{ width: 6, height: 6, borderRadius: "50%", background: C.textDim }} />
+                  <span style={{ fontFamily: FONT.body, fontSize: 11, color: C.textDim, fontWeight: 500 }}>Not Active</span>
+                </div>
+              </div>
+            </div>
+            <button onClick={() => onSubscribe && onSubscribe(0)} style={{
+              width: "100%", padding: "12px 0", borderRadius: 12, border: "none",
+              background: C.accent, color: "#000",
+              fontFamily: FONT.display, fontWeight: 700, fontSize: 13,
+              letterSpacing: 0.8, cursor: "pointer", textTransform: "uppercase",
+              boxShadow: `0 4px 20px ${C.accentGlow}`,
+            }}>Subscribe</button>
+          </div>
+          {/* View other plans */}
+          <div onClick={() => onSubscribe && onSubscribe(null)} style={{
+            display: "flex", alignItems: "center", justifyContent: "center", gap: 6,
+            padding: "14px 0", cursor: "pointer", marginTop: 4,
+          }}>
+            <span style={{ fontFamily: FONT.body, fontSize: 12, color: C.accent, fontWeight: 500 }}>View other plans</span>
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke={C.accent} strokeWidth="2"><polyline points="9 18 15 12 9 6"/></svg>
+          </div>
+        </div>
       </CollapsibleSection>
 
       {/* My Address */}
@@ -1804,6 +1832,45 @@ function ProfileTab({ onClose }) {
         <ProfileMenuItem icon="📦" label="Order History" color={C.accent} />
         <ProfileMenuItem icon="🎫" label="My QR Codes" color={C.accent} />
         <ProfileMenuItem icon="🎁" label="My Rewards" color={C.gold} />
+      </CollapsibleSection>
+
+      {/* My Linked Stores */}
+      <CollapsibleSection title="My Linked Stores">
+        <div style={{ padding: "4px 0" }}>
+          {[
+            { name: "Steam", icon: "◎", color: "#66c0f4", bgGrad: "#1b2838" },
+            { name: "Epic Games", icon: "◆", color: "#fff", bgGrad: "#2a2a2a" },
+          ].map((store, i) => (
+            <div key={i} style={{
+              display: "flex", alignItems: "center", gap: 14, padding: "14px 16px",
+              borderRadius: 14, marginBottom: 8,
+              background: `linear-gradient(135deg, ${store.bgGrad}40, ${store.bgGrad}15)`,
+              border: `1px solid ${store.color}12`, cursor: "pointer",
+            }}>
+              <div style={{
+                width: 44, height: 44, borderRadius: 12,
+                background: store.bgGrad, border: `1px solid ${store.color}20`,
+                display: "flex", alignItems: "center", justifyContent: "center",
+                fontSize: 20, color: store.color,
+              }}>{store.icon}</div>
+              <div style={{ flex: 1 }}>
+                <div style={{ fontFamily: FONT.display, fontSize: 14, fontWeight: 700, color: C.text }}>{store.name}</div>
+                <div style={{ fontFamily: FONT.body, fontSize: 10, color: C.textDim, marginTop: 2 }}>Link your account</div>
+              </div>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke={store.color} strokeWidth="1.5" style={{ opacity: 0.6 }}>
+                <path d="M10 13a5 5 0 007.54.54l3-3a5 5 0 00-7.07-7.07l-1.72 1.71"/>
+                <path d="M14 11a5 5 0 00-7.54-.54l-3 3a5 5 0 007.07 7.07l1.71-1.71"/>
+              </svg>
+            </div>
+          ))}
+        </div>
+      </CollapsibleSection>
+
+      {/* Esports */}
+      <CollapsibleSection title="Esports">
+        <ProfileMenuItem icon="🏆" label="My Tournaments" color={C.accent} />
+        <ProfileMenuItem icon="👥" label="My Teams" color={C.accent} />
+        <ProfileMenuItem icon="⚔" label="Join Tournament" color={C.accent} />
       </CollapsibleSection>
 
       {/* App Settings */}
@@ -1910,7 +1977,7 @@ function JioGamesApp() {
             {tab === "mobile" && <MobileTab onGameSelect={handleGameSelect} />}
             {tab === "allscreen" && <AllScreenTab onGameSelect={handleGameSelect} />}
             {tab === "store" && <StoreTab />}
-            {tab === "profile" && <ProfileTab onClose={() => handleNav("mobile")} />}
+            {tab === "profile" && <ProfileTab onClose={() => handleNav("mobile")} onSubscribe={(plan) => { setTab("subscribe"); setSubscribePlan(plan); scrollRef.current?.scrollTo(0, 0); }} />}
             {tab === "subscribe" && <SubscribeScreen onClose={() => handleNav("mobile")} initialPlan={subscribePlan} />}
           </>
         )}
