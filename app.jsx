@@ -523,6 +523,13 @@ function SearchOverlay({ onClose, onSelect, context }) {
   const [animIn, setAnimIn] = useState(false);
   const inputRef = useRef(null);
   const isStore = context === "store";
+  const isMobile = context === "mobile";
+  const isAllScreen = context === "allscreen";
+
+  // Filter search index by tab context
+  const contextIndex = isStore ? [] : SEARCH_INDEX.filter(g =>
+    isMobile ? g.passType === "mobile" : isAllScreen ? g.passType === "allscreen" : true
+  );
 
   useEffect(() => {
     setTimeout(() => setAnimIn(true), 30);
@@ -535,13 +542,13 @@ function SearchOverlay({ onClose, onSelect, context }) {
   const storeResults = q.length === 0 ? [] : ALL_STORE_ITEMS.filter(item =>
     item.title.toLowerCase().includes(q) || (item.storeCategory || "").includes(q)
   );
-  // Game search
-  const gameResults = q.length === 0 ? [] : SEARCH_INDEX.filter(g =>
+  // Game search — filtered by tab
+  const gameResults = q.length === 0 ? [] : contextIndex.filter(g =>
     g.title.toLowerCase().includes(q) || g.genre.toLowerCase().includes(q)
   );
   const results = isStore ? storeResults : gameResults;
 
-  const genres = [...new Set(SEARCH_INDEX.map(g => g.genre))].slice(0, 8);
+  const genres = [...new Set(contextIndex.map(g => g.genre))].slice(0, 8);
   const storeCategories = ["Brands", "Top-Ups", "Vouchers", "Games"];
 
   return (
@@ -570,7 +577,7 @@ function SearchOverlay({ onClose, onSelect, context }) {
             ref={inputRef}
             value={query}
             onChange={e => setQuery(e.target.value)}
-            placeholder={isStore ? "Search store, vouchers, brands..." : "Search games, genres..."}
+            placeholder={isStore ? "Search store, vouchers, brands..." : isMobile ? "Search mobile games..." : isAllScreen ? "Search all screen games..." : "Search games, genres..."}
             style={{
               flex: 1, background: "none", border: "none", outline: "none",
               fontFamily: FONT.body, fontSize: 14, color: C.text,
@@ -621,7 +628,7 @@ function SearchOverlay({ onClose, onSelect, context }) {
             ) : (
               <>
                 <div style={{ fontFamily: FONT.display, fontSize: 13, fontWeight: 700, color: C.textDim, letterSpacing: 0.8, textTransform: "uppercase", padding: "24px 0 10px" }}>Popular</div>
-                {SEARCH_INDEX.slice(0, 6).map((game, i) => (
+                {contextIndex.slice(0, 6).map((game, i) => (
                   <div key={game.id} onClick={() => onSelect(game)} style={{
                     display: "flex", alignItems: "center", gap: 12, padding: "10px 0",
                     borderBottom: `1px solid ${C.border}`, cursor: "pointer",
@@ -1967,7 +1974,7 @@ function JioGamesApp() {
 
       <div ref={scrollRef} style={{ position: "absolute", top: 0, left: 0, right: 0, bottom: 0, overflowY: "auto", overflowX: "hidden", paddingBottom: 68 }}>
         {(tab === "mobile" || tab === "allscreen" || tab === "store") && !selectedGame && (
-          <div style={{ position: "relative", zIndex: 50, padding: "42px 16px 0", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+          <div style={{ position: "relative", zIndex: 50, padding: "46px 16px 10px", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
             <JioLogo />
             <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
               <button onClick={() => setShowSearch(true)} style={{ width: 36, height: 36, borderRadius: 12, background: C.glass, backdropFilter: "blur(12px)", display: "flex", alignItems: "center", justifyContent: "center", border: `1px solid ${C.glassBorder}`, cursor: "pointer", color: C.textSec }}>
